@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.example.trading.proto";
+option java_outer_classname = "MatchProto";
+
+package match;
+
+message MatchRequest {
+  string order_id = 1;
+  string symbol = 2;
+  int32 quantity = 3;
+  string side = 4; // BUY or SELL
+  double price = 5;
+  string user_id = 6;
+}
+
+message MatchResponse {
+  bool matched = 1;
+  string message = 2;
+}
+
+service MatchingEngineService {
+  rpc MatchOrder (MatchRequest) returns (MatchResponse);
+}

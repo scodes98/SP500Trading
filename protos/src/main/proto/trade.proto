@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.example.trading.proto";
+option java_outer_classname = "TradeProto";
+
+package trade;
+
+message TradeRequest {
+  string buy_order_id = 1;
+  string sell_order_id = 2;
+  string symbol = 3;
+  int32 quantity = 4;
+  double price = 5;
+  string matched_at = 6; // ISO 8601 timestamp
+  string buyer_user_id = 7;
+  string seller_user_id = 8;
+}
+
+message TradeResponse {
+  string trade_id = 1;
+  string status = 2;
+}
+
+service TradeExecutorService {
+  rpc ExecuteTrade (TradeRequest) returns (TradeResponse);
+}

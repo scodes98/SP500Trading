@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:tradedb;DB_CLOSE_DELAY=-1
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  h2:
+    console:
+      enabled: true
+
+grpc:
+  server:
+    port: 9092
+  client:
+    ledger-service:
+      address: static://localhost:9093
+      negotiationType: plaintext

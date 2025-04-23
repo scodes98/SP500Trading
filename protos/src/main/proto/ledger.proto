@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.example.trading.proto";
+option java_outer_classname = "LedgerProto";
+
+package ledger;
+
+message LedgerEntryRequest {
+  string trade_id = 1;
+  string symbol = 2;
+  int32 quantity = 3;
+  double price = 4;
+  string matched_at = 5;
+  string side = 6;
+  string buyer_order_id = 7;
+  string seller_order_id = 8;
+}
+
+message LedgerEntryResponse {
+  string status = 1;
+}
+
+service LedgerService {
+  rpc RecordTrade (LedgerEntryRequest) returns (LedgerEntryResponse);
+}
