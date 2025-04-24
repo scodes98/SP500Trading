@@ -45,7 +45,7 @@ public class TradeExecutorServiceImpl extends TradeExecutorServiceGrpc.TradeExec
         );
 
         tradeRepository.save(entity);
-        System.out.println("💾 Trade stored in DB: " + tradeId);
+        System.out.println("Trade stored in DB: " + tradeId);
 
 
         System.out.println("Executing Trade [" + tradeId + "]");
@@ -64,6 +64,8 @@ public class TradeExecutorServiceImpl extends TradeExecutorServiceGrpc.TradeExec
                 .setSide("BUY") // for now, dummy side — you can pass in real later
                 .setBuyerOrderId(request.getBuyOrderId())
                 .setSellerOrderId(request.getSellOrderId())
+                .setBuyerUserId(request.getBuyerUserId())
+                .setSellerUserId(request.getSellerUserId())
                 .build();
 
         LedgerEntryResponse ledgerResponse = ledgerStub.recordTrade(ledgerRequest);

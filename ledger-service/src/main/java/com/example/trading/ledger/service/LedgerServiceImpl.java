@@ -7,8 +7,13 @@ import com.example.trading.ledger.repository.LedgerRepository;
 import com.example.trading.proto.LedgerEntryRequest;
 import com.example.trading.proto.LedgerEntryResponse;
 import com.example.trading.proto.LedgerServiceGrpc;
+import com.example.trading.proto.TradeEntry;
+import com.example.trading.proto.UserTradeRequest;
+import com.example.trading.proto.UserTradeResponse;
+
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
+import java.util.List;
 
 @GrpcService
 public class LedgerServiceImpl extends LedgerServiceGrpc.LedgerServiceImplBase {
@@ -18,7 +23,7 @@ public class LedgerServiceImpl extends LedgerServiceGrpc.LedgerServiceImplBase {
 
     @Override
     public void recordTrade(LedgerEntryRequest request, StreamObserver<LedgerEntryResponse> responseObserver) {
-        System.out.println("🧾 Recording trade in ledger:");
+        System.out.println("Recording trade in ledger:");
         System.out.println("→ Trade ID: " + request.getTradeId());
         System.out.println("→ Symbol: " + request.getSymbol());
         System.out.println("→ Quantity: " + request.getQuantity());
@@ -33,11 +38,13 @@ public class LedgerServiceImpl extends LedgerServiceGrpc.LedgerServiceImplBase {
             request.getMatchedAt(),
             request.getSide(),
             request.getBuyerOrderId(),
-            request.getSellerOrderId()
+            request.getSellerOrderId(),
+            request.getBuyerUserId(),
+            request.getSellerUserId()
         );
 
         ledgerRepository.save(entity);
-        System.out.println("💾 Ledger entry saved for tradeId: " + request.getTradeId());
+        System.out.println("Ledger entry saved for tradeId: " + request.getTradeId());
 
 
         LedgerEntryResponse response = LedgerEntryResponse.newBuilder()
@@ -47,4 +54,34 @@ public class LedgerServiceImpl extends LedgerServiceGrpc.LedgerServiceImplBase {
         responseObserver.onNext(response);
         responseObserver.onCompleted();
     }
+
+    @Override
+    public void getTradesByUser(UserTradeRequest request, StreamObserver<UserTradeResponse> responseObserver) {
+    String userId = request.getUserId();
+
+    List<LedgerEntryEntity> userTrades = ledgerRepository.findByBuyerUserIdOrSellerUserId(userId, userId);
+
+    UserTradeResponse.Builder responseBuilder = UserTradeResponse.newBuilder();
+
+    for (LedgerEntryEntity entity : userTrades) {
+        TradeEntry trade = TradeEntry.newBuilder()
+                .setTradeId(entity.getTradeId())
+                .setSymbol(entity.getSymbol())
+                .setQuantity(entity.getQuantity())
+                .setPrice(entity.getPrice())
+                .setMatchedAt(entity.getMatchedAt())
+                .setSide(entity.getSide())
+                .setBuyerOrderId(entity.getBuyerOrderId())
+                .setSellerOrderId(entity.getSellerOrderId())
+                .setBuyerUserId(entity.getBuyerUserId())
+                .setSellerUserId(entity.getSellerUserId())
+                .build();
+
+        responseBuilder.addTrades(trade);
+    }
+
+    responseObserver.onNext(responseBuilder.build());
+    responseObserver.onCompleted();
+}
+
 }

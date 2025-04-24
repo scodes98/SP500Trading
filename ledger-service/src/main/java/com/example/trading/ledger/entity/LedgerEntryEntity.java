@@ -18,11 +18,14 @@ public class LedgerEntryEntity {
     private String side;
     private String buyerOrderId;
     private String sellerOrderId;
+    private String buyerUserId;
+    private String sellerUserId;
+
 
     public LedgerEntryEntity() {}
 
     public LedgerEntryEntity(String tradeId, String symbol, int quantity, double price, String matchedAt,
-                              String side, String buyerOrderId, String sellerOrderId) {
+                              String side, String buyerOrderId, String sellerOrderId, String buyerUserId, String sellerUserId) {
         this.tradeId = tradeId;
         this.symbol = symbol;
         this.quantity = quantity;
@@ -31,7 +34,11 @@ public class LedgerEntryEntity {
         this.side = side;
         this.buyerOrderId = buyerOrderId;
         this.sellerOrderId = sellerOrderId;
+        this.buyerOrderId = buyerUserId;
+        this.sellerOrderId = sellerUserId;
     }
+
+   
 
     public String getTradeId() {
         return tradeId;
@@ -96,5 +103,22 @@ public class LedgerEntryEntity {
     public void setSellerOrderId(String sellerOrderId) {
         this.sellerOrderId = sellerOrderId;
     }
+
+    public String getBuyerUserId() {
+        return buyerUserId;
+    }
+    
+    public void setBuyerUserId(String buyerUserId) {
+        this.buyerUserId = buyerUserId;
+    }
+    
+    public String getSellerUserId() {
+        return sellerUserId;
+    }
+    
+    public void setSellerUserId(String sellerUserId) {
+        this.sellerUserId = sellerUserId;
+    }
+    
     
 }

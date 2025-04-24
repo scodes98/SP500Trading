@@ -25,7 +25,7 @@ public class MatchingEngineServiceImpl extends MatchingEngineServiceGrpc.Matchin
 
     @Override
     public void matchOrder(MatchRequest request, StreamObserver<MatchResponse> responseObserver) {
-        System.out.println("📩 New Order: " + request.getSide() + " " + request.getSymbol() + " @ " + request.getPrice());
+        System.out.println("New Order: " + request.getSide() + " " + request.getSymbol() + " @ " + request.getPrice());
 
         Order incomingOrder = new Order(
                 request.getOrderId(),
@@ -44,7 +44,7 @@ public class MatchingEngineServiceImpl extends MatchingEngineServiceGrpc.Matchin
         } else if ("SELL".equalsIgnoreCase(request.getSide())) {
             matched = matchSellOrder(incomingOrder);
         } else {
-            System.err.println("❌ Unknown side: " + request.getSide());
+            System.err.println("Unknown side: " + request.getSide());
         }
 
         MatchResponse response = MatchResponse.newBuilder()
@@ -70,7 +70,7 @@ public class MatchingEngineServiceImpl extends MatchingEngineServiceGrpc.Matchin
             double tradePrice = bestSell.getPrice();
 
             // Execute trade
-            executeTrade(buyOrder.getOrderId(), bestSell.getOrderId(), buyOrder.getSymbol(), tradeQty, tradePrice);
+            executeTrade(buyOrder, bestSell, buyOrder.getSymbol(), tradeQty, tradePrice);
 
             buyOrder.reduceQuantity(tradeQty);
             bestSell.reduceQuantity(tradeQty);
@@ -103,7 +103,8 @@ public class MatchingEngineServiceImpl extends MatchingEngineServiceGrpc.Matchin
             double tradePrice = bestBuy.getPrice();
 
             // Execute trade
-            executeTrade(bestBuy.getOrderId(), sellOrder.getOrderId(), sellOrder.getSymbol(), tradeQty, tradePrice);
+            // Inside matchSellOrder(...)
+            executeTrade(bestBuy, sellOrder, sellOrder.getSymbol(), tradeQty, tradePrice);
 
             sellOrder.reduceQuantity(tradeQty);
             bestBuy.reduceQuantity(tradeQty);
@@ -122,14 +123,16 @@ public class MatchingEngineServiceImpl extends MatchingEngineServiceGrpc.Matchin
         return matched;
     }
 
-    private void executeTrade(String buyOrderId, String sellOrderId, String symbol, int quantity, double price) {
+    private void executeTrade(Order buyOrder, Order sellOrder, String symbol, int quantity, double price) {
         TradeRequest trade = TradeRequest.newBuilder()
-                .setBuyOrderId(buyOrderId)
-                .setSellOrderId(sellOrderId)
+                .setBuyOrderId(buyOrder.getOrderId())
+                .setSellOrderId(sellOrder.getOrderId())
                 .setSymbol(symbol)
                 .setQuantity(quantity)
                 .setPrice(price)
                 .setMatchedAt(java.time.Instant.now().toString())
+                .setBuyerUserId(buyOrder.getUserId())         
+                .setSellerUserId(sellOrder.getUserId())       
                 .build();
 
         TradeResponse tradeResponse = tradeExecutorStub.executeTrade(trade);
