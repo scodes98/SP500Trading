@@ -1,3 +1,8 @@
 grpc:
   server:
     port: 9094
+
+  client:
+    ledger-service:
+      address: static://ledger-service:9093
+      negotiationType: plaintext

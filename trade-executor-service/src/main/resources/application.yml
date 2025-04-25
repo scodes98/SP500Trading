@@ -17,5 +17,5 @@ grpc:
     port: 9092
   client:
     ledger-service:
-      address: static://localhost:9093
+      address: static://ledger-service:9093
       negotiationType: plaintext

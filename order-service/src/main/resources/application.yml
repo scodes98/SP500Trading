@@ -1,5 +1,5 @@
 server:
-  port: 
+  port: 8080
   
 spring:
   datasource:
@@ -21,6 +21,6 @@ grpc:
 
   client:
     matching-engine:
-      address: static://localhost:9091
+      address: static://matching-engine:9091
       negotiationType: plaintext
 

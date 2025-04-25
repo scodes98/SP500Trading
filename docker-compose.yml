@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+
+  order-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.order-service
+    ports:
+      - "9090:9090"
+    depends_on:
+      - matching-engine
+
+  matching-engine:
+    build:
+      context: .
+      dockerfile: Dockerfile.matching-engine
+    ports:
+      - "9091:9091"
+    depends_on:
+      - trade-executor-service
+
+  trade-executor-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.trade-executor-service
+    ports:
+      - "9092:9092"
+    depends_on:
+      - ledger-service
+
+  ledger-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.ledger-service
+    ports:
+      - "9093:9093"
+
+  portfolio-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.portfolio-service
+    ports:
+      - "9094:9094"
+    depends_on:
+      - ledger-service

@@ -3,5 +3,5 @@ grpc:
     port: 9091
   client:
     trade-executor:
-      address: static://localhost:9092
+      address: static://trade-executor-service:9092
       negotiationType: plaintext

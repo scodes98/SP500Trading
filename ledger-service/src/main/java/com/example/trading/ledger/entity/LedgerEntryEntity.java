@@ -34,8 +34,8 @@ public class LedgerEntryEntity {
         this.side = side;
         this.buyerOrderId = buyerOrderId;
         this.sellerOrderId = sellerOrderId;
-        this.buyerOrderId = buyerUserId;
-        this.sellerOrderId = sellerUserId;
+        this.buyerUserId = buyerUserId;
+        this.sellerUserId = sellerUserId;
     }
 
    
