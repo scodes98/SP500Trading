@@ -24,13 +24,13 @@ public class LedgerServiceImpl extends LedgerServiceGrpc.LedgerServiceImplBase {
     @Override
     public void recordTrade(LedgerEntryRequest request, StreamObserver<LedgerEntryResponse> responseObserver) {
         System.out.println("Recording trade in ledger:");
-        System.out.println("→ Trade ID: " + request.getTradeId());
-        System.out.println("→ Symbol: " + request.getSymbol());
-        System.out.println("→ Quantity: " + request.getQuantity());
-        System.out.println("→ Price: " + request.getPrice());
-        System.out.println("→ Side: " + request.getSide());
-        System.out.println("→ buyer_user_id: " + request.getBuyerUserId());
-        System.out.println("→ seller_user_id: " + request.getSellerUserId());
+        System.out.println("Trade ID: " + request.getTradeId());
+        System.out.println("Symbol: " + request.getSymbol());
+        System.out.println("Quantity: " + request.getQuantity());
+        System.out.println("Price: " + request.getPrice());
+        System.out.println("Side: " + request.getSide());
+        System.out.println("buyer_user_id: " + request.getBuyerUserId());
+        System.out.println("seller_user_id: " + request.getSellerUserId());
 
         LedgerEntryEntity entity = new LedgerEntryEntity(
             request.getTradeId(),
@@ -61,11 +61,11 @@ public class LedgerServiceImpl extends LedgerServiceGrpc.LedgerServiceImplBase {
     public void getTradesByUser(UserTradeRequest request, StreamObserver<UserTradeResponse> responseObserver) {
     String userId = request.getUserId();
 
-    System.out.println("🧾 Fetching trades for userId: " + userId);
+    System.out.println("Fetching trades for userId: " + userId);
 
     List<LedgerEntryEntity> userTrades = ledgerRepository.findByBuyerUserIdOrSellerUserId(userId, userId);
 
-    System.out.println("🔍 Found trades: " + userTrades.size()); // Add this
+    System.out.println("Found trades: " + userTrades.size());
 
     UserTradeResponse.Builder responseBuilder = UserTradeResponse.newBuilder();
 

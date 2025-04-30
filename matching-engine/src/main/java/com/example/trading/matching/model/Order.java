@@ -49,12 +49,10 @@ public class Order {
         return userId;
     }
 
-    // 🧮 Reduce remaining quantity after a partial fill
     public void reduceQuantity(int fillQty) {
         this.quantity -= fillQty;
     }
 
-    // ✅ Used to check if order is fully filled
     public boolean isFilled() {
         return this.quantity <= 0;
     }

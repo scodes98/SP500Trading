@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @GrpcService
 public class OrderServiceImpl extends OrderServiceGrpc.OrderServiceImplBase {
 
-    @GrpcClient("matching-engine")  // matches name in application.yml
+    @GrpcClient("matching-engine")
     private MatchingEngineServiceGrpc.MatchingEngineServiceBlockingStub matchingEngineStub;
 
     @Autowired

@@ -1,7 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://34.10.13.109:5432/postgres
+    username: postgres
+    password: "|f;%u.is}H2}39e{"
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+
 grpc:
   server:
     port: 9091
   client:
     trade-executor:
-      address: static://trade-executor-service:9092
-      negotiationType: plaintext
+      # address: static://trade-executor-service:9092
+      # negotiationType: plaintext
+      address: dns:///trade-executor-service-1011460061885.us-central1.run.app:443
+      negotiationType: TLS

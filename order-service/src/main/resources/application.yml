@@ -1,19 +1,20 @@
 server:
-  port: 8080
-  
+  port: 9090
+
 spring:
   datasource:
-    url: jdbc:h2:mem:ordersdb;DB_CLOSE_DELAY=-1
-    driverClassName: org.h2.Driver
-    username: sa
-    password:
+    url: jdbc:postgresql://34.10.13.109:5432/postgres
+    username: postgres
+    password: "|f;%u.is}H2}39e{"
+    driver-class-name: org.postgresql.Driver
+
   jpa:
     hibernate:
       ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
-  h2:
-    console:
-      enabled: true
 
 grpc:
   server:
@@ -21,6 +22,7 @@ grpc:
 
   client:
     matching-engine:
-      address: static://matching-engine:9091
-      negotiationType: plaintext
-
+      # address: static://matching-engine:9091
+      # negotiationType: plaintext
+      address: dns:///matching-engine-1011460061885.us-central1.run.app:443
+      negotiationType: TLS

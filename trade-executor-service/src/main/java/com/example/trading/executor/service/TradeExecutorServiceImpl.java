@@ -54,23 +54,38 @@ public class TradeExecutorServiceImpl extends TradeExecutorServiceGrpc.TradeExec
         System.out.println("→ Buyer: " + request.getBuyerUserId() + " (Order: " + request.getBuyOrderId() + ")");
         System.out.println("→ Seller: " + request.getSellerUserId() + " (Order: " + request.getSellOrderId() + ")");
 
-        // Record trade in ledger
-        LedgerEntryRequest ledgerRequest = LedgerEntryRequest.newBuilder()
-                .setTradeId(tradeId)
-                .setSymbol(request.getSymbol())
-                .setQuantity(request.getQuantity())
-                .setPrice(request.getPrice())
-                .setMatchedAt(request.getMatchedAt())
-                .setSide("BUY") // for now, dummy side — you can pass in real later
-                .setBuyerOrderId(request.getBuyOrderId())
-                .setSellerOrderId(request.getSellOrderId())
-                .setBuyerUserId(request.getBuyerUserId())
-                .setSellerUserId(request.getSellerUserId())
-                .build();
+        // BUY side entry
+        LedgerEntryRequest buyerEntry = LedgerEntryRequest.newBuilder()
+        .setTradeId(tradeId + "-B")
+        .setSymbol(request.getSymbol())
+        .setQuantity(request.getQuantity())
+        .setPrice(request.getPrice())
+        .setMatchedAt(request.getMatchedAt())
+        .setSide("BUY")
+        .setBuyerOrderId(request.getBuyOrderId())
+        .setSellerOrderId(request.getSellOrderId())
+        .setBuyerUserId(request.getBuyerUserId())
+        .setSellerUserId(request.getSellerUserId())
+        .build();
+        LedgerEntryResponse buyerResponse = ledgerStub.recordTrade(buyerEntry);
+        System.out.println("Ledger BUY status: " + buyerResponse.getStatus());
 
-        LedgerEntryResponse ledgerResponse = ledgerStub.recordTrade(ledgerRequest);
+        // SELL side entry
+        LedgerEntryRequest sellerEntry = LedgerEntryRequest.newBuilder()
+        .setTradeId(tradeId + "-S")
+        .setSymbol(request.getSymbol())
+        .setQuantity(request.getQuantity())
+        .setPrice(request.getPrice())
+        .setMatchedAt(request.getMatchedAt())
+        .setSide("SELL")
+        .setBuyerOrderId(request.getBuyOrderId())
+        .setSellerOrderId(request.getSellOrderId())
+        .setBuyerUserId(request.getBuyerUserId())
+        .setSellerUserId(request.getSellerUserId())
+        .build();
+        LedgerEntryResponse sellerResponse = ledgerStub.recordTrade(sellerEntry);
+        System.out.println("Ledger SELL status: " + sellerResponse.getStatus());
 
-        System.out.println("Ledger status: " + ledgerResponse.getStatus());
 
         TradeResponse response = TradeResponse.newBuilder()
                 .setTradeId(tradeId)

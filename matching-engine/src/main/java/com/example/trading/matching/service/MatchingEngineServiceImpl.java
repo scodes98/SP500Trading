@@ -136,6 +136,6 @@ public class MatchingEngineServiceImpl extends MatchingEngineServiceGrpc.Matchin
                 .build();
 
         TradeResponse tradeResponse = tradeExecutorStub.executeTrade(trade);
-        System.out.println("✅ Trade Executed: " + tradeResponse.getTradeId() + " | Qty: " + quantity + " @ " + price);
+        System.out.println("Trade Executed: " + tradeResponse.getTradeId() + " | Qty: " + quantity + " @ " + price);
     }
 }
