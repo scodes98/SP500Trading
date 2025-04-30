@@ -12,7 +12,8 @@ message PositionRequest {
 
 message Position {
   string symbol = 1;
-  int32 quantity = 2;
+  int32 BOUGHT = 2;
+  int32 SOLD = 3;
 }
 
 message PositionResponse {

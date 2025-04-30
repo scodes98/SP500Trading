@@ -5,7 +5,8 @@ import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import net.devh.boot.grpc.server.service.GrpcService;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @GrpcService
 public class PortfolioServiceImpl extends PortfolioServiceGrpc.PortfolioServiceImplBase {
@@ -15,36 +16,36 @@ public class PortfolioServiceImpl extends PortfolioServiceGrpc.PortfolioServiceI
 
     @Override
     public void getPositions(PositionRequest request, StreamObserver<PositionResponse> responseObserver) {
-    UserTradeRequest tradeRequest = UserTradeRequest.newBuilder()
-            .setUserId(request.getUserId())
-            .build();
+        UserLedgerRequest ledgerRequest = UserLedgerRequest.newBuilder()
+                .setUserId(request.getUserId())
+                .build();
 
-    UserTradeResponse tradeResponse = ledgerStub.getTradesByUser(tradeRequest);
+        UserLedgerResponse ledgerResponse = ledgerStub.getLedgerEntriesByUser(ledgerRequest);
 
-    Map<String, Integer> positionMap = new HashMap<>();
+        Map<String, int[]> positionMap = new HashMap<>(); // [0] = BOUGHT, [1] = SOLD
 
-    for (TradeEntry trade : tradeResponse.getTradesList()) {
-        String symbol = trade.getSymbol();
-        int quantity = trade.getQuantity();
-        String userId = request.getUserId();
+        for (LedgerEntry entry : ledgerResponse.getEntriesList()) {
+            String symbol = entry.getSymbol();
+            int quantity = entry.getQuantity();
+            positionMap.putIfAbsent(symbol, new int[2]);
 
-        if (userId.equals(trade.getBuyerUserId())) {
-            positionMap.put(symbol, positionMap.getOrDefault(symbol, 0) + quantity);
-        } else if (userId.equals(trade.getSellerUserId())) {
-            positionMap.put(symbol, positionMap.getOrDefault(symbol, 0) - quantity);
+            if ("BUY".equals(entry.getSide()) && request.getUserId().equals(entry.getBuyerUserId())) {
+                positionMap.get(symbol)[0] += quantity;
+            } else if ("SELL".equals(entry.getSide()) && request.getUserId().equals(entry.getSellerUserId())) {
+                positionMap.get(symbol)[1] += quantity;
+            }
         }
+
+        PositionResponse.Builder responseBuilder = PositionResponse.newBuilder();
+        for (Map.Entry<String, int[]> entry : positionMap.entrySet()) {
+            responseBuilder.addPositions(Position.newBuilder()
+                    .setSymbol(entry.getKey())
+                    .setBOUGHT(entry.getValue()[0])
+                    .setSOLD(entry.getValue()[1])
+                    .build());
+        }
+
+        responseObserver.onNext(responseBuilder.build());
+        responseObserver.onCompleted();
     }
-
-    PositionResponse.Builder responseBuilder = PositionResponse.newBuilder();
-    for (Map.Entry<String, Integer> entry : positionMap.entrySet()) {
-        responseBuilder.addPositions(Position.newBuilder()
-                .setSymbol(entry.getKey())
-                .setQuantity(entry.getValue())
-                .build());
-    }
-
-    responseObserver.onNext(responseBuilder.build());
-    responseObserver.onCompleted();
-}
-
 }

@@ -9,6 +9,7 @@ package ledger;
 service LedgerService {
   rpc RecordTrade (LedgerEntryRequest) returns (LedgerEntryResponse);
   rpc GetTradesByUser (UserTradeRequest) returns (UserTradeResponse);
+  rpc GetLedgerEntriesByUser (UserLedgerRequest) returns (UserLedgerResponse);
 }
 
 message LedgerEntryRequest {
@@ -20,7 +21,6 @@ message LedgerEntryRequest {
   string side = 6;
   string buyer_order_id = 7;
   string seller_order_id = 8;
-
   string buyer_user_id = 9;
   string seller_user_id = 10;
 }
@@ -37,6 +37,14 @@ message UserTradeResponse {
   repeated TradeEntry trades = 1;
 }
 
+message UserLedgerRequest {
+  string user_id = 1;
+}
+
+message UserLedgerResponse {
+  repeated LedgerEntry entries = 1;
+}
+
 message TradeEntry {
   string trade_id = 1;
   string symbol = 2;
@@ -49,3 +57,17 @@ message TradeEntry {
   string buyer_user_id = 9;
   string seller_user_id = 10;
 }
+
+message LedgerEntry {
+  string trade_id = 1;
+  string symbol = 2;
+  int32 quantity = 3;
+  double price = 4;
+  string matched_at = 5;
+  string side = 6;
+  string buyer_order_id = 7;
+  string seller_order_id = 8;
+  string buyer_user_id = 9;
+  string seller_user_id = 10;
+}
+

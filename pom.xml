@@ -43,7 +43,6 @@
     <!-- List of child modules -->
     <modules>
         <module>protos</module>
-        <module>user-account-service</module>
         <module>order-service</module>
         <module>matching-engine</module>
         <module>trade-executor-service</module>

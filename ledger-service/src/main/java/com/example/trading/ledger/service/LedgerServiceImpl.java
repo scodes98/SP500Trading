@@ -4,10 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.example.trading.ledger.entity.LedgerEntryEntity;
 import com.example.trading.ledger.repository.LedgerRepository;
+import com.example.trading.proto.LedgerEntry;
 import com.example.trading.proto.LedgerEntryRequest;
 import com.example.trading.proto.LedgerEntryResponse;
 import com.example.trading.proto.LedgerServiceGrpc;
 import com.example.trading.proto.TradeEntry;
+import com.example.trading.proto.UserLedgerRequest;
+import com.example.trading.proto.UserLedgerResponse;
 import com.example.trading.proto.UserTradeRequest;
 import com.example.trading.proto.UserTradeResponse;
 
@@ -89,5 +92,36 @@ public class LedgerServiceImpl extends LedgerServiceGrpc.LedgerServiceImplBase {
     responseObserver.onNext(responseBuilder.build());
     responseObserver.onCompleted();
 }
+
+@Override
+public void getLedgerEntriesByUser(UserLedgerRequest request, StreamObserver<UserLedgerResponse> responseObserver) {
+    String userId = request.getUserId();
+    System.out.println("Fetching ledger entries for userId: " + userId);
+
+    List<LedgerEntryEntity> entries = ledgerRepository.findByBuyerUserIdOrSellerUserId(userId, userId);
+
+    UserLedgerResponse.Builder responseBuilder = UserLedgerResponse.newBuilder();
+
+    for (LedgerEntryEntity entity : entries) {
+        LedgerEntry ledgerEntry = LedgerEntry.newBuilder()
+                .setTradeId(entity.getTradeId())
+                .setSymbol(entity.getSymbol())
+                .setQuantity(entity.getQuantity())
+                .setPrice(entity.getPrice())
+                .setMatchedAt(entity.getMatchedAt())
+                .setSide(entity.getSide())
+                .setBuyerOrderId(entity.getBuyerOrderId())
+                .setSellerOrderId(entity.getSellerOrderId())
+                .setBuyerUserId(entity.getBuyerUserId())
+                .setSellerUserId(entity.getSellerUserId())
+                .build();
+
+        responseBuilder.addEntries(ledgerEntry);
+    }
+
+    responseObserver.onNext(responseBuilder.build());
+    responseObserver.onCompleted();
+}
+
 
 }
