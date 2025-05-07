@@ -1,10 +1,10 @@
 server:
-  port: 9090
+  port: ${SERVER_PORT:9090}
 
 spring:
   datasource:
-    url: jdbc:postgresql://34.10.13.109:5432/postgres
-    username: postgres
+    url: jdbc:postgresql://${DB_HOST:34.10.13.109}:${DB_PORT:5432}/${DB_NAME:postgres}
+    username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
@@ -18,11 +18,9 @@ spring:
 
 grpc:
   server:
-    port: 9090
+    port: ${GRPC_PORT:9090}
 
   client:
     matching-engine:
-      # address: static://matching-engine:9091
-      # negotiationType: plaintext
-      address: dns:///matching-engine-1011460061885.us-central1.run.app:443
-      negotiationType: TLS
+      address: ${MATCHING_ENGINE_ADDRESS:dns:///matching-engine-1011460061885.us-central1.run.app:443}
+      negotiationType: ${MATCHING_ENGINE_NEGOTIATION_TYPE:TLS}

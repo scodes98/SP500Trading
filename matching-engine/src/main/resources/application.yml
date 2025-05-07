@@ -1,7 +1,7 @@
 spring:
   datasource:
-    url: jdbc:postgresql://34.10.13.109:5432/postgres
-    username: postgres
+    url: jdbc:postgresql://${DB_HOST:34.10.13.109}:${DB_PORT:5432}/${DB_NAME:postgres}
+    username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
@@ -15,10 +15,9 @@ spring:
 
 grpc:
   server:
-    port: 9091
+    port: ${GRPC_PORT:9091}
+
   client:
     trade-executor:
-      # address: static://trade-executor-service:9092
-      # negotiationType: plaintext
-      address: dns:///trade-executor-service-1011460061885.us-central1.run.app:443
-      negotiationType: TLS
+      address: ${TRADE_EXECUTOR_ADDRESS:dns:///trade-executor-service-1011460061885.us-central1.run.app:443}
+      negotiationType: ${TRADE_EXECUTOR_NEGOTIATION_TYPE:TLS}

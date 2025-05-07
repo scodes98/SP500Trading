@@ -1,7 +1,7 @@
 spring:
   datasource:
-    url: jdbc:postgresql://34.10.13.109:5432/postgres
-    username: postgres
+    url: jdbc:postgresql://${DB_HOST:34.10.13.109}:${DB_PORT:5432}/${DB_NAME:postgres}
+    username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
@@ -15,10 +15,9 @@ spring:
 
 grpc:
   server:
-    port: 9092
+    port: ${GRPC_PORT:9092}
+
   client:
     ledger-service:
-      # address: static://ledger-service:9093
-      # negotiationType: plaintext
-      address: dns:///ledger-service-1011460061885.us-central1.run.app:443
-      negotiationType: TLS
+      address: ${LEDGER_SERVICE_ADDRESS:dns:///ledger-service-1011460061885.us-central1.run.app:443}
+      negotiationType: ${LEDGER_SERVICE_NEGOTIATION_TYPE:TLS}
